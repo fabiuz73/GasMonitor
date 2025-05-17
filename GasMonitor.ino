@@ -27,7 +27,7 @@ void show_battery_screen(lv_event_t *e) {
 }
 
 void show_settings_screen(lv_event_t *e) {
-  Serial.println("Callback: Schermata Impostazioni aperta");
+  Serial.println("Callback: Schermata Setting aperta");
 }
 
 void show_sd_screen(lv_event_t *e) {
@@ -98,7 +98,7 @@ void create_main_menu() {
   // Creazione dei pulsanti con colori distinti
   create_button("Sensori", lv_palette_main(LV_PALETTE_RED), 0, 0, show_sensors_screen);
   create_button("Batteria", lv_palette_main(LV_PALETTE_GREEN), 1, 0, show_battery_screen);
-  create_button("Impostazioni", lv_palette_main(LV_PALETTE_BLUE), 0, 1, show_settings_screen);
+  create_button("Setting", lv_palette_main(LV_PALETTE_BLUE), 0, 1, show_settings_screen);
   create_button("SD", lv_palette_main(LV_PALETTE_ORANGE), 1, 1, show_sd_screen);
   create_button("Meteo", lv_palette_main(LV_PALETTE_TEAL), 0, 2, show_weather_screen);
   create_button("GPS", lv_palette_main(LV_PALETTE_INDIGO), 1, 2, show_gps_screen);
@@ -114,10 +114,11 @@ void setup() {
 
   // Inizializzazione touchscreen
   touchscreenSPI.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
-68e  touchscreen.setRotation(0);  // Rotazione verticale
+  touchscreen.begin(touchscreenSPI);
+  touchscreen.setRotation(0);  // Rotazione verticale
   lv_display_t *disp = lv_tft_espi_create(SCREEN_WIDTH, SCREEN_HEIGHT, draw_buf, sizeof(draw_buf));
   lv_display_set_rotation(disp, LV_DISPLAY_ROTATION_0);
-  lv_indev_t *indev = lv_indev_create();                 
+  lv_indev_t *indev = lv_indev_create();
   lv_indev_set_type(indev, LV_INDEV_TYPE_POINTER);
   lv_indev_set_read_cb(indev, [](lv_indev_t *indev, lv_indev_data_t *data) {
     if (touchscreen.tirqTouched() && touchscreen.touched()) {
@@ -137,4 +138,4 @@ void loop() {
   lv_task_handler();  // Gestione degli eventi LVGL
   lv_tick_inc(5);     // Incremento del timer di LVGL
   delay(5);           // Ritardo per evitare sovraccarichi
-} m 
+}
